@@ -1,5 +1,9 @@
 name: anchor-test
 on: [push]
+env:
+  AVM_VERSION: 0.24.2
+  ANCHOR_VERSION: 0.24.2
+  SOLANA_CLI_VERSION: 1.10.32
 jobs:
   run-anchor-test:
     runs-on: ubuntu-latest
@@ -18,7 +22,7 @@ jobs:
             ~/.cache/solana/
             ~/.local/share/solana/
           key: solana-${{ runner.os }}-v0000-${{ env.SOLANA_CLI_VERSION }}
-      - run: sh -c "$(curl -sSfL https://release.solana.com/v1.10.32/install)"
+      - run: sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_CLI_VERSION }}/install)"
         shell: bash
       - run: echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
         shell: bash
@@ -31,9 +35,9 @@ jobs:
         id: cache-avm
         with:
           path: ~/.cargo/bin
-          key: avm-${{ runner.os }}-build
+          key: avm-${{ runner.os }}-build-${{ env.AVM_VERSION }}
       - name: Install AVM
-        run: cargo install --git https://github.com/project-serum/anchor avm --locked --tag v0.24.2
+        run: cargo install --git https://github.com/project-serum/anchor avm --locked --tag v{{ env.AVM_VERSION }}
       - name: Cache Anchor
         uses: actions/cache@v2
         id: cache-anchor
@@ -41,9 +45,9 @@ jobs:
           path: ~/.avm
           key: anchor-${{ runner.os }}-build-${{ env.ANCHOR_VERSION }}
       - name: Install Anchor
-        run: avm install 0.24.2
+        run: avm install {{ env.ANCHOR_VERSION }}
       - name: Activate Anchor
-        run: avm use 0.24.2
+        run: avm use {{ env.ANCHOR_VERSION }}
       - name: Verify version
         run: anchor --version
       - name: Run tests
