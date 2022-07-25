@@ -1,0 +1,13 @@
+name: anchor-test
+on: [push]
+jobs:
+  run-anchor-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Solana
+        run: sh -c "$(curl -sSfL https://release.solana.com/v1.10.32/install)"
+
