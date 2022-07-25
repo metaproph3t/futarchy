@@ -8,6 +8,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
+      - name: Install packages
+        run: yarn
       - uses: actions/cache@v2
         name: Cache Solana Tool Suite
         id: cache-solana
