@@ -13,9 +13,11 @@ jobs:
       - name: Install AVM
         run: cargo install --git https://github.com/project-serum/anchor avm --locked --force
       - name: Install Anchor
-        run: avim install 0.24.2
+        run: avm install 0.24.2
       - name: Activate Anchor
         run: avm use 0.24.2
       - name: Verify version
         run: anchor --version
+      - name: Run tests
+        run: anchor test
 
