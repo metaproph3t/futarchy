@@ -69,7 +69,7 @@ jobs:
       - name: Make Anchor.toml file compatible with runner
         run: sed -i 's/user/runner/' Anchor.toml
         shell: bash
-      - name: rustup toolchain install stable --profile minimal
+      - run: rustup toolchain install stable --profile minimal
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
       - name: Run tests
