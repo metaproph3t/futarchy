@@ -7,7 +7,6 @@ pub mod futarchy {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-
         Ok(())
     }
 }
