@@ -33,32 +33,32 @@ jobs:
         shell: bash
       - name: Install necessary packages
         run: sudo apt-get update && sudo apt-get install -y pkg-config build-essential libudev-dev
-      - uses: actions/cache@v2
-        name: Cache AVM
-        id: cache-avm
-        with:
-          path: ~/.cargo/bin
-          key: avm-${{ runner.os }}-build-${{ env.AVM_VERSION }}
-      - name: Install AVM
-        run: cargo install --git https://github.com/project-serum/anchor avm --locked --tag v${{ env.AVM_VERSION }}
-      - name: Cache Anchor
-        uses: actions/cache@v2
-        id: cache-anchor
-        with:
-          path: ~/.avm
-          key: anchor-${{ runner.os }}-build-${{ env.ANCHOR_VERSION }}
-      - name: Install Anchor
-        run: avm install ${{ env.ANCHOR_VERSION }}
-        shell: bash
-      - name: Activate Anchor
-        run: avm use ${{ env.ANCHOR_VERSION }}
-        shell: bash
-      - name: Verify version
-        run: anchor --version
-        shell: bash
+      # - uses: actions/cache@v2
+      #   name: Cache AVM
+      #   id: cache-avm
+      #   with:
+      #     path: ~/.cargo/bin
+      #     key: avm-${{ runner.os }}-build-${{ env.AVM_VERSION }}
+      # - name: Install AVM
+      #   run: cargo install --git https://github.com/project-serum/anchor avm --locked --tag v${{ env.AVM_VERSION }}
+      # - name: Cache Anchor
+      #   uses: actions/cache@v2
+      #   id: cache-anchor
+      #   with:
+      #     path: ~/.avm
+      #     key: anchor-${{ runner.os }}-build-${{ env.ANCHOR_VERSION }}
+      # - name: Install Anchor
+      #   run: avm install ${{ env.ANCHOR_VERSION }}
+      #   shell: bash
+      # - name: Activate Anchor
+      #   run: avm use ${{ env.ANCHOR_VERSION }}
+      #   shell: bash
+      # - name: Verify version
+      #   run: anchor --version
+        # shell: bash
       - name: Make Anchor.toml file compatible with runner
         run: sed -i 's/user/runner/' Anchor.toml
         shell: bash
       - name: Run tests
-        run: anchor test
+        run: yarn run test
 
