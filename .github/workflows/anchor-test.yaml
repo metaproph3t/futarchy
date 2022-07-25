@@ -5,9 +5,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Anchor Test
-        uses: mrgnlabs/anchor-test-action@v0.4
+      - uses: actions/setup-node@v3
         with:
-          args: ""
-          workspace_dir: "."
+          node-version: '18'
+      - uses: actions/cache@v2
+        name: Cache Solana Tool Suite
+        id: cache-solana
+        with:
+          path: |
+            ~/.cache/solana/
+            ~/.local/share/solana/
+          key: solana-${{ runner.os }}-v0000-${{ env.SOLANA_CLI_VERSION }}
+      - run: sh -c "$(curl -sSfL https://release.solana.com/v1.10.32/install)"
+        shell: bash
+      - name: Install necessary packages
+        run: sudo apt-get update && sudo apt-get install -y pkg-config build-essential libudev-dev
+      - uses: actions/cache@v2
+        name: Cache AVM
+        id: cache-avm
+        with:
+          path: ~/.cargo/bin
+          key: avm-${{ runner.os }}-build
+      - name: Install AVM
+        run: cargo install --git https://github.com/project-serum/anchor avm --locked --force
+      - name: Install Anchor
+        run: avm install 0.24.2
+      - name: Activate Anchor
+        run: avm use 0.24.2
+      - name: Verify version
+        run: anchor --version
+      - name: Run tests
+        run: anchor test
 
