@@ -56,17 +56,19 @@ jobs:
       # - name: Verify version
       #   run: anchor --version
         # shell: bash
-      - name: Cache Anchor
-        uses: actions/cache@v2
-        id: cache-anchor
-        with:
-          path: ~/.cargo/bin
-          key: anchor-${{ runner.os }}-build-${{ env.ANCHOR_VERSION }}
+      # - name: Cache Anchor
+      #   uses: actions/cache@v2
+      #   id: cache-anchor
+      #   with:
+      #     path: ~/.cargo/bin
+      #     key: anchor-${{ runner.os }}-build-${{ env.ANCHOR_VERSION }}
+      # - name: Install Anchor
+      #   run: cargo install --git https://github.com/project-serum/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli --locked
       - name: Install Anchor
-        run: cargo install --git https://github.com/project-serum/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli --locked
+        run: npm i -g @project-serum/anchor-cli
       - name: Make Anchor.toml file compatible with runner
         run: sed -i 's/user/runner/' Anchor.toml
         shell: bash
       - name: Run tests
-        run: npx anchor test 
+        run: anchor test 
 
