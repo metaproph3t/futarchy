@@ -60,5 +60,5 @@ jobs:
         run: sed -i 's/user/runner/' Anchor.toml
         shell: bash
       - name: Run tests
-        run: yarn run test
+        run: npx anchor test 
 
