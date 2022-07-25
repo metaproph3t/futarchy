@@ -1,0 +1,46 @@
+name: anchor-test
+on: [push]
+env:
+  ANCHOR_VERSION: 0.24.2
+  SOLANA_CLI_VERSION: 1.10.32
+jobs:
+  run-anchor-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.1'
+      - name: Install packages
+        run: yarn
+        shell: bash
+      - name: Cache Solana tool suite
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/solana/
+            ~/.local/share/solana/
+          key: solana-${{ runner.os }}-build-${{ env.SOLANA_CLI_VERSION }}
+      - name: Install Solana tool suite
+        run: sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_CLI_VERSION }}/install)"
+        shell: bash
+      - name: Update PATH
+        run: echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH 
+        shell: bash
+      - name: Create keypair
+        run: solana-keygen new --no-bip39-passphrase
+        shell: bash
+      - name: Install Anchor
+        run: npm i -g @project-serum/anchor-cli@${{ env.ANCHOR_VERSION }}
+      - name: Make Anchor.toml file compatible with runner
+        run: sed -i 's/user/runner/' Anchor.toml
+        shell: bash
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+      - name: Cache Cargo dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Run tests
+        run: anchor test 
+
