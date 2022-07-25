@@ -37,7 +37,7 @@ jobs:
           path: ~/.cargo/bin
           key: avm-${{ runner.os }}-build-${{ env.AVM_VERSION }}
       - name: Install AVM
-        run: cargo install --git https://github.com/project-serum/anchor avm --locked --tag v{{ env.AVM_VERSION }}
+        run: cargo install --git https://github.com/project-serum/anchor avm --locked --tag v${{ env.AVM_VERSION }}
       - name: Cache Anchor
         uses: actions/cache@v2
         id: cache-anchor
@@ -45,9 +45,9 @@ jobs:
           path: ~/.avm
           key: anchor-${{ runner.os }}-build-${{ env.ANCHOR_VERSION }}
       - name: Install Anchor
-        run: avm install {{ env.ANCHOR_VERSION }}
+        run: avm install ${{ env.ANCHOR_VERSION }}
       - name: Activate Anchor
-        run: avm use {{ env.ANCHOR_VERSION }}
+        run: avm use ${{ env.ANCHOR_VERSION }}
       - name: Verify version
         run: anchor --version
       - name: Run tests
