@@ -45,6 +45,7 @@ jobs:
         with:
           toolchain: stable
           profile: minimal
+          components: rustc
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
       - name: Run tests
