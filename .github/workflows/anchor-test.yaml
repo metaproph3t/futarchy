@@ -2,7 +2,7 @@ name: anchor-test
 on: [push]
 env:
   ANCHOR_VERSION: 0.24.2
-  SOLANA_CLI_VERSION: 1.10.30
+  SOLANA_CLI_VERSION: 1.10.29
   NODE_VERSION: 16.15.1
 jobs:
   run-anchor-test:
