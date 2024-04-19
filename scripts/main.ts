@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 // @ts-ignore
-import * as token from "@solana/spl-token-018";
+import * as token from "@solana/spl-token";
 const { BN, Program } = anchor;
 import { MPL_TOKEN_METADATA_PROGRAM_ID as UMI_MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
 
@@ -139,7 +139,7 @@ async function createMint(
   );
 }
 
-async function initializeVault(
+export async function initializeVault(
   settlementAuthority: any,
   underlyingTokenMint: any,
   nonce: anchor.BN
@@ -169,48 +169,48 @@ async function initializeVault(
   let conditionalOnFinalizeKP = Keypair.generate();
   let conditionalOnRevertKP = Keypair.generate();
 
-  const { key: underlyingTokenMetadataKey, metadata: underlyingTokenMetadata } =
-    await fetchOnchainMetadataForMint(underlyingTokenMint);
+  // const { key: underlyingTokenMetadataKey, metadata: underlyingTokenMetadata } =
+  //   await fetchOnchainMetadataForMint(underlyingTokenMint);
 
-  console.log(
-    `metadata for token = ${underlyingTokenMint.toBase58()}`,
-    underlyingTokenMetadata
-  );
+  // console.log(
+  //   `metadata for token = ${underlyingTokenMint.toBase58()}`,
+  //   underlyingTokenMetadata
+  // );
 
-  const conditionalOnFinalizeTokenMetadata = await findMetaplexMetadataPda(
-    conditionalOnFinalizeKP.publicKey
-  );
-  const conditionalOnRevertTokenMetadata = await findMetaplexMetadataPda(
-    conditionalOnRevertKP.publicKey
-  );
+  // const conditionalOnFinalizeTokenMetadata = await findMetaplexMetadataPda(
+  //   conditionalOnFinalizeKP.publicKey
+  // );
+  // const conditionalOnRevertTokenMetadata = await findMetaplexMetadataPda(
+  //   conditionalOnRevertKP.publicKey
+  // );
 
   // pull off the least significant 32 bits representing the proposal count
   const proposalCount = nonce.and(new BN(1).shln(32).sub(new BN(1)));
 
   // create new json, take that and pipe into the instruction
-  const { passTokenMetadataUri, faileTokenMetadataUri } =
-    await uploadOffchainMetadata(proposalCount, underlyingTokenMetadata.symbol);
+  // const { passTokenMetadataUri, faileTokenMetadataUri } =
+  //   await uploadOffchainMetadata(proposalCount, underlyingTokenMetadata.symbol);
 
-  const addMetadataToConditionalTokensIx = await vaultProgram.methods
-    .addMetadataToConditionalTokens(
-      proposalCount,
-      passTokenMetadataUri,
-      faileTokenMetadataUri
-    )
-    .accounts({
-      payer: payer.publicKey,
-      vault,
-      underlyingTokenMint,
-      underlyingTokenMetadata: underlyingTokenMetadataKey,
-      conditionalOnFinalizeTokenMint: conditionalOnFinalizeKP.publicKey,
-      conditionalOnRevertTokenMint: conditionalOnRevertKP.publicKey,
-      conditionalOnFinalizeTokenMetadata,
-      conditionalOnRevertTokenMetadata,
-      tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-      systemProgram: SystemProgram.programId,
-      rent: SYSVAR_RENT_PUBKEY,
-    })
-    .instruction();
+  // const addMetadataToConditionalTokensIx = await vaultProgram.methods
+  //   .addMetadataToConditionalTokens(
+  //     proposalCount,
+  //     passTokenMetadataUri,
+  //     faileTokenMetadataUri
+  //   )
+  //   .accounts({
+  //     payer: payer.publicKey,
+  //     vault,
+  //     underlyingTokenMint,
+  //     underlyingTokenMetadata: underlyingTokenMetadataKey,
+  //     conditionalOnFinalizeTokenMint: conditionalOnFinalizeKP.publicKey,
+  //     conditionalOnRevertTokenMint: conditionalOnRevertKP.publicKey,
+  //     conditionalOnFinalizeTokenMetadata,
+  //     conditionalOnRevertTokenMetadata,
+  //     tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
+  //     systemProgram: SystemProgram.programId,
+  //     rent: SYSVAR_RENT_PUBKEY,
+  //   })
+  //   .instruction();
 
   await vaultProgram.methods
     .initializeConditionalVault(settlementAuthority, nonce)
@@ -228,13 +228,13 @@ async function initializeVault(
     .signers([conditionalOnFinalizeKP, conditionalOnRevertKP])
     .preInstructions([
       ComputeBudgetProgram.setComputeUnitLimit({
-        units: 150_000
+        units: 80_000
       }),
       ComputeBudgetProgram.setComputeUnitPrice({
         microLamports: 100
       }),
     ])
-    .postInstructions([addMetadataToConditionalTokensIx])
+    // .postInstructions([addMetadataToConditionalTokensIx])
     .rpc();
 
   //const storedVault = await vaultProgram.account.conditionalVault.fetch(
