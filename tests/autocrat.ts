@@ -39,7 +39,13 @@ import { AutocratMigrator } from "../target/types/autocrat_migrator";
 const { PublicKey, Keypair } = anchor.web3;
 
 import { OpenbookTwap } from "./fixtures/openbook_twap";
-import { AmmClient, getATA, getAmmAddr, getAmmLpMintAddr, getVaultAddr } from "../app/src";
+import {
+  AmmClient,
+  getATA,
+  getAmmAddr,
+  getAmmLpMintAddr,
+  getVaultAddr,
+} from "../app/src";
 import { PriceMath } from "../app/src/utils/priceMath";
 import { AutocratClient } from "../app/src/AutocratClient";
 import {
@@ -537,34 +543,28 @@ describe("autocrat", async function () {
       let quoteVault = await vaultClient.getVault(storedProposal.quoteVault);
 
       let storedPassAmm = await ammClient.getAmm(storedProposal.passAmm);
-      // console.log(storedPassAmm);
-      assert.ok(storedPassAmm.baseMint.equals(baseVault.conditionalOnFinalizeTokenMint));
-      console.log(await getAccount(banksClient, getATA(storedPassAmm.baseMint, mm0.keypair.publicKey)[0]))
-
-      // let tx = 
-      //   new Transaction().add(
-      //   SystemProgram.transfer({
-      //     fromPubkey: payer.publicKey,
-      //     toPubkey: mm0.keypair.publicKey,
-      //     lamports: 100_000_000
-      //   }));
-      // tx.recentBlockhash = context.lastBlockhash;
-      // tx.sign(payer);
-
-      // await banksClient.processTransaction(
-      //   tx
-      // );
+      assert.ok(
+        storedPassAmm.baseMint.equals(baseVault.conditionalOnFinalizeTokenMint)
+      );
 
       let [lpMint] = getAmmLpMintAddr(ammClient.getProgramId(), passAmm);
 
-      await createAssociatedTokenAccount(banksClient, payer, lpMint, mm0.keypair.publicKey);
+      await createAssociatedTokenAccount(
+        banksClient,
+        payer,
+        lpMint,
+        mm0.keypair.publicKey
+      );
 
       [lpMint] = getAmmLpMintAddr(ammClient.getProgramId(), failAmm);
 
-      await createAssociatedTokenAccount(banksClient, payer, lpMint, mm0.keypair.publicKey);
-      // await createAssociatedTokenAccount(banksClient, payer, baseVault.conditionalOnFinalizeTokenMint, mm0.keypair.publicKey);
-      // await createAssociatedTokenAccount(banksClient, payer, quoteVault.conditionalOnFinalizeTokenMint, mm0.keypair.publicKey);
-      
+      await createAssociatedTokenAccount(
+        banksClient,
+        payer,
+        lpMint,
+        mm0.keypair.publicKey
+      );
+
       await ammClient.addLiquidity(
         storedProposal.passAmm,
         1000,
@@ -583,7 +583,6 @@ describe("autocrat", async function () {
         mm0.keypair
       );
 
-
       for (let i = 0; i < 100; i++) {
         let currentClock = await context.banksClient.getClock();
         context.setClock(
@@ -595,26 +594,29 @@ describe("autocrat", async function () {
             currentClock.unixTimestamp
           )
         );
-        await ammClient
-          .crankThatTwapIx(storedProposal.passAmm)
-          .preInstructions([
-            ComputeBudgetProgram.setComputeUnitPrice({
-              microLamports: i,
-            }),
-          ])
-          .rpc();
-        await ammClient.crankThatTwapIx(storedProposal.failAmm).preInstructions([
-          ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: i,
-          })
-        ]).rpc();
+        for (const ammToCrank of [
+          storedProposal.passAmm,
+          storedProposal.failAmm,
+        ]) {
+          await ammClient
+            .crankThatTwapIx(ammToCrank)
+            .preInstructions([
+              ComputeBudgetProgram.setComputeUnitPrice({
+                microLamports: i,
+              }),
+            ])
+            .rpc();
+        }
       }
 
       await autocratClient.finalizeProposal(proposal);
 
-
-      let storedBaseVault = await vaultClient.getVault(storedProposal.baseVault);
-      let storedQuoteVault = await vaultClient.getVault(storedProposal.quoteVault);
+      let storedBaseVault = await vaultClient.getVault(
+        storedProposal.baseVault
+      );
+      let storedQuoteVault = await vaultClient.getVault(
+        storedProposal.quoteVault
+      );
 
       assert.exists(storedBaseVault.status.finalized);
       assert.exists(storedQuoteVault.status.finalized);
@@ -631,27 +633,7 @@ describe("autocrat", async function () {
         1_000_000n
       );
 
-      await autocrat.methods
-        .executeProposal()
-        .accounts({
-          proposal,
-          dao,
-          daoTreasury,
-        })
-        .remainingAccounts(
-          instruction.accounts
-            .concat({
-              pubkey: instruction.programId,
-              isWritable: false,
-              isSigner: false,
-            })
-            .map((meta) =>
-              meta.pubkey.equals(daoTreasury)
-                ? { ...meta, isSigner: false }
-                : meta
-            )
-        )
-        .rpc();
+      await autocratClient.executeProposal(proposal);
 
       storedProposal = await autocrat.account.proposal.fetch(proposal);
 
@@ -675,7 +657,7 @@ describe("autocrat", async function () {
         storedBaseVault.conditionalOnRevertTokenMint,
         aliceUnderlyingBaseTokenAccount,
         storedBaseVault.underlyingTokenAccount,
-        baseVault,
+        storedProposal.baseVault,
         banksClient
       );
       await redeemConditionalTokens(
@@ -687,7 +669,7 @@ describe("autocrat", async function () {
         storedQuoteVault.conditionalOnRevertTokenMint,
         aliceUnderlyingQuoteTokenAccount,
         storedQuoteVault.underlyingTokenAccount,
-        quoteVault,
+        storedProposal.quoteVault,
         banksClient
       );
 
@@ -2258,27 +2240,41 @@ async function initializeProposal(
     .signers(openbookFailMarketSigners)
     .rpc();
 
-  await autocrat.methods
-    .initializeProposal(dummyURL, ix)
+  await autocratClient
+    .initializeProposalIx(
+      proposalKeypair,
+      dummyURL,
+      ix,
+      dao,
+      storedDAO.tokenMint,
+      storedDAO.usdcMint
+    )
     .preInstructions([
       await autocrat.account.proposal.createInstruction(proposalKeypair, 2500),
     ])
-    .accounts({
-      proposal: proposalKeypair.publicKey,
-      dao,
-      daoTreasury,
-      baseVault,
-      quoteVault,
-      passAmm,
-      failAmm,
-      openbookTwapPassMarket,
-      openbookTwapFailMarket,
-      openbookPassMarket,
-      openbookFailMarket,
-      proposer: payer.publicKey,
-    })
-    .signers([proposalKeypair])
     .rpc();
+
+  // await autocrat.methods
+  //   .initializeProposal(dummyURL, ix)
+  //   .preInstructions([
+  //     await autocrat.account.proposal.createInstruction(proposalKeypair, 2500),
+  //   ])
+  //   .accounts({
+  //     proposal: proposalKeypair.publicKey,
+  //     dao,
+  //     daoTreasury,
+  //     baseVault,
+  //     quoteVault,
+  //     passAmm,
+  //     failAmm,
+  //     openbookTwapPassMarket,
+  //     openbookTwapFailMarket,
+  //     openbookPassMarket,
+  //     openbookFailMarket,
+  //     proposer: payer.publicKey,
+  //   })
+  //   .signers([proposalKeypair])
+  //   .rpc();
 
   const storedProposal = await autocrat.account.proposal.fetch(
     proposalKeypair.publicKey

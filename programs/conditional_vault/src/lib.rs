@@ -6,7 +6,7 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{self, Burn, Mint, MintTo, Token, TokenAccount, Transfer},
 };
-use mpl_token_metadata::state::DataV2;
+use anchor_spl::metadata::mpl_token_metadata::types::DataV2;
 
 #[cfg(not(feature = "no-entrypoint"))]
 use solana_security_txt::security_txt;
@@ -86,7 +86,7 @@ pub mod conditional_vault {
                 .conditional_on_finalize_token_mint
                 .key(),
             conditional_on_revert_token_mint: ctx.accounts.conditional_on_revert_token_mint.key(),
-            pda_bump: *ctx.bumps.get("vault").unwrap(),
+            pda_bump: ctx.bumps.vault,
         });
 
         Ok(())
@@ -103,7 +103,7 @@ pub mod conditional_vault {
 
         // there are null bytes we must trim from string, otherwise string value is longer than we want
         let underlying_token_symbol_raw =
-            ctx.accounts.underlying_token_metadata.data.symbol.clone();
+            ctx.accounts.underlying_token_metadata.symbol.clone();
         let underlying_token_symbol = underlying_token_symbol_raw.trim_matches(char::from(0));
 
         let on_finalize_token_symbol = format!("p{}", underlying_token_symbol);
