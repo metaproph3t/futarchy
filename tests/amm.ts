@@ -156,6 +156,7 @@ describe("amm", async function () {
           twapFirstObservationScaled
         )
       );
+
     });
 
     it("fails to create an amm with two identical mints", async function () {

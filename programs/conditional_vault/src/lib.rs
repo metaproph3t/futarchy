@@ -498,8 +498,8 @@ pub struct InitializeConditionalVault<'info> {
         ],
         bump
     )]
-    pub vault: Account<'info, ConditionalVault>,
-    pub underlying_token_mint: Account<'info, Mint>,
+    pub vault: Box<Account<'info, ConditionalVault>>,
+    pub underlying_token_mint: Box<Account<'info, Mint>>,
     #[account(
         init,
         payer = payer,
@@ -521,12 +521,10 @@ pub struct InitializeConditionalVault<'info> {
     )]
     pub conditional_on_revert_token_mint: Box<Account<'info, Mint>>,
     #[account(
-        init,
-        payer = payer,
         associated_token::authority = vault,
         associated_token::mint = underlying_token_mint
     )]
-    pub vault_underlying_token_account: Account<'info, TokenAccount>,
+    pub vault_underlying_token_account: Box<Account<'info, TokenAccount>>,
     #[account(mut)]
     pub payer: Signer<'info>,
     pub token_program: Program<'info, Token>,
