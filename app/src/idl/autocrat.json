@@ -1,234 +1,280 @@
 {
-  "version": "1.0.0",
-  "name": "autocrat",
+  "address": "FuTPR6ScKMPHtZFwacq9qrtf9VjscawNEFTb2wSYr1gY",
+  "metadata": {
+    "name": "autocrat",
+    "version": "1.0.0",
+    "spec": "0.1.0",
+    "description": "SVM-based program for running futarchy"
+  },
   "instructions": [
     {
-      "name": "initializeDao",
+      "name": "execute_proposal",
+      "discriminator": [
+        186,
+        60,
+        116,
+        133,
+        108,
+        128,
+        111,
+        28
+      ],
+      "accounts": [
+        {
+          "name": "proposal",
+          "writable": true
+        },
+        {
+          "name": "dao",
+          "relations": [
+            "proposal"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "finalize_proposal",
+      "discriminator": [
+        23,
+        68,
+        51,
+        167,
+        109,
+        173,
+        187,
+        164
+      ],
+      "accounts": [
+        {
+          "name": "proposal",
+          "writable": true
+        },
+        {
+          "name": "pass_amm",
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "fail_amm",
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "dao",
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "base_vault",
+          "writable": true,
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "quote_vault",
+          "writable": true,
+          "relations": [
+            "proposal"
+          ]
+        },
+        {
+          "name": "treasury",
+          "relations": [
+            "dao"
+          ]
+        },
+        {
+          "name": "pass_lp_user_account",
+          "writable": true
+        },
+        {
+          "name": "fail_lp_user_account",
+          "writable": true
+        },
+        {
+          "name": "pass_lp_vault_account",
+          "writable": true
+        },
+        {
+          "name": "fail_lp_vault_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "vault_program",
+          "address": "vAuLTQjV5AZx5f3UgE75wcnkxnQowWxThn1hGjfCVwP"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_dao",
+      "discriminator": [
+        128,
+        226,
+        96,
+        90,
+        39,
+        56,
+        24,
+        196
+      ],
       "accounts": [
         {
           "name": "dao",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         },
         {
-          "name": "tokenMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "token_mint"
         },
         {
-          "name": "usdcMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "usdc_mint"
         }
       ],
       "args": [
         {
           "name": "params",
           "type": {
-            "defined": "InitializeDaoParams"
+            "defined": {
+              "name": "InitializeDaoParams"
+            }
           }
         }
       ]
     },
     {
-      "name": "initializeProposal",
+      "name": "initialize_proposal",
+      "discriminator": [
+        50,
+        73,
+        156,
+        98,
+        129,
+        149,
+        21,
+        158
+      ],
       "accounts": [
         {
           "name": "proposal",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "quote_vault",
+            "base_vault",
+            "pass_amm",
+            "fail_amm"
+          ]
         },
         {
           "name": "dao",
-          "isMut": true,
-          "isSigner": false
+          "writable": true
         },
         {
-          "name": "quoteVault",
-          "isMut": false,
-          "isSigner": false
+          "name": "quote_vault"
         },
         {
-          "name": "baseVault",
-          "isMut": false,
-          "isSigner": false
+          "name": "base_vault"
         },
         {
-          "name": "passAmm",
-          "isMut": false,
-          "isSigner": false
+          "name": "pass_amm"
         },
         {
-          "name": "passLpMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "pass_lp_mint"
         },
         {
-          "name": "failLpMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "fail_lp_mint"
         },
         {
-          "name": "failAmm",
-          "isMut": false,
-          "isSigner": false
+          "name": "fail_amm"
         },
         {
-          "name": "passLpUserAccount",
-          "isMut": true,
-          "isSigner": false
+          "name": "pass_lp_user_account",
+          "writable": true
         },
         {
-          "name": "failLpUserAccount",
-          "isMut": true,
-          "isSigner": false
+          "name": "fail_lp_user_account",
+          "writable": true
         },
         {
-          "name": "passLpVaultAccount",
-          "isMut": true,
-          "isSigner": false
+          "name": "pass_lp_vault_account",
+          "writable": true
         },
         {
-          "name": "failLpVaultAccount",
-          "isMut": true,
-          "isSigner": false
+          "name": "fail_lp_vault_account",
+          "writable": true
         },
         {
           "name": "proposer",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
       "args": [
         {
           "name": "params",
           "type": {
-            "defined": "InitializeProposalParams"
+            "defined": {
+              "name": "InitializeProposalParams"
+            }
           }
         }
       ]
     },
     {
-      "name": "finalizeProposal",
+      "name": "update_dao",
+      "discriminator": [
+        131,
+        72,
+        75,
+        25,
+        112,
+        210,
+        109,
+        2
+      ],
       "accounts": [
         {
-          "name": "proposal",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "passAmm",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "failAmm",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "dao",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "baseVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "quoteVault",
-          "isMut": true,
-          "isSigner": false
+          "writable": true
         },
         {
           "name": "treasury",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "passLpUserAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "failLpUserAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "passLpVaultAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "failLpVaultAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "vaultProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "executeProposal",
-      "accounts": [
-        {
-          "name": "proposal",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "dao",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "updateDao",
-      "accounts": [
-        {
-          "name": "dao",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "treasury",
-          "isMut": false,
-          "isSigner": true
+          "signer": true,
+          "relations": [
+            "dao"
+          ]
         }
       ],
       "args": [
         {
-          "name": "daoParams",
+          "name": "dao_params",
           "type": {
-            "defined": "UpdateDaoParams"
+            "defined": {
+              "name": "UpdateDaoParams"
+            }
           }
         }
       ]
@@ -236,304 +282,56 @@
   ],
   "accounts": [
     {
+      "name": "Amm",
+      "discriminator": [
+        143,
+        245,
+        200,
+        17,
+        74,
+        214,
+        196,
+        135
+      ]
+    },
+    {
+      "name": "ConditionalVault",
+      "discriminator": [
+        63,
+        132,
+        87,
+        98,
+        36,
+        51,
+        175,
+        247
+      ]
+    },
+    {
       "name": "DAO",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "treasuryPdaBump",
-            "type": "u8"
-          },
-          {
-            "name": "treasury",
-            "type": "publicKey"
-          },
-          {
-            "name": "tokenMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "usdcMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "proposalCount",
-            "type": "u32"
-          },
-          {
-            "name": "passThresholdBps",
-            "type": "u16"
-          },
-          {
-            "name": "slotsPerProposal",
-            "type": "u64"
-          },
-          {
-            "name": "twapInitialObservation",
-            "docs": [
-              "For manipulation-resistance the TWAP is a time-weighted average observation,",
-              "where observation tries to approximate price but can only move by",
-              "`twap_max_observation_change_per_update` per update. Because it can only move",
-              "a little bit per update, you need to check that it has a good initial observation.",
-              "Otherwise, an attacker could create a very high initial observation in the pass",
-              "market and a very low one in the fail market to force the proposal to pass.",
-              "",
-              "We recommend setting an initial observation around the spot price of the token,",
-              "and max observation change per update around 2% the spot price of the token.",
-              "For example, if the spot price of META is $400, we'd recommend setting an initial",
-              "observation of 400 (converted into the AMM prices) and a max observation change per",
-              "update of 8 (also converted into the AMM prices). Observations can be updated once",
-              "a minute, so 2% allows the proposal market to reach double the spot price or 0",
-              "in 50 minutes."
-            ],
-            "type": "u128"
-          },
-          {
-            "name": "twapMaxObservationChangePerUpdate",
-            "type": "u128"
-          },
-          {
-            "name": "minQuoteFutarchicLiquidity",
-            "docs": [
-              "As an anti-spam measure and to help liquidity, you need to lock up some liquidity",
-              "in both futarchic markets in order to create a proposal.",
-              "",
-              "For example, for META, we can use a `min_quote_futarchic_liquidity` of",
-              "5000 * 1_000_000 (5000 USDC) and a `min_base_futarchic_liquidity` of",
-              "10 * 1_000_000_000 (10 META)."
-            ],
-            "type": "u64"
-          },
-          {
-            "name": "minBaseFutarchicLiquidity",
-            "type": "u64"
-          }
-        ]
-      }
+      "discriminator": [
+        242,
+        60,
+        23,
+        196,
+        237,
+        48,
+        173,
+        129
+      ]
     },
     {
       "name": "Proposal",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "number",
-            "type": "u32"
-          },
-          {
-            "name": "proposer",
-            "type": "publicKey"
-          },
-          {
-            "name": "descriptionUrl",
-            "type": "string"
-          },
-          {
-            "name": "slotEnqueued",
-            "type": "u64"
-          },
-          {
-            "name": "state",
-            "type": {
-              "defined": "ProposalState"
-            }
-          },
-          {
-            "name": "instruction",
-            "type": {
-              "defined": "ProposalInstruction"
-            }
-          },
-          {
-            "name": "passAmm",
-            "type": "publicKey"
-          },
-          {
-            "name": "failAmm",
-            "type": "publicKey"
-          },
-          {
-            "name": "baseVault",
-            "type": "publicKey"
-          },
-          {
-            "name": "quoteVault",
-            "type": "publicKey"
-          },
-          {
-            "name": "dao",
-            "type": "publicKey"
-          },
-          {
-            "name": "passLpTokensLocked",
-            "type": "u64"
-          },
-          {
-            "name": "failLpTokensLocked",
-            "type": "u64"
-          }
-        ]
-      }
-    }
-  ],
-  "types": [
-    {
-      "name": "InitializeDaoParams",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "twapInitialObservation",
-            "type": "u128"
-          },
-          {
-            "name": "twapMaxObservationChangePerUpdate",
-            "type": "u128"
-          },
-          {
-            "name": "minQuoteFutarchicLiquidity",
-            "type": "u64"
-          },
-          {
-            "name": "minBaseFutarchicLiquidity",
-            "type": "u64"
-          },
-          {
-            "name": "passThresholdBps",
-            "type": {
-              "option": "u16"
-            }
-          },
-          {
-            "name": "slotsPerProposal",
-            "type": {
-              "option": "u64"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "InitializeProposalParams",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "descriptionUrl",
-            "type": "string"
-          },
-          {
-            "name": "instruction",
-            "type": {
-              "defined": "ProposalInstruction"
-            }
-          },
-          {
-            "name": "passLpTokensToLock",
-            "type": "u64"
-          },
-          {
-            "name": "failLpTokensToLock",
-            "type": "u64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "UpdateDaoParams",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "passThresholdBps",
-            "type": {
-              "option": "u16"
-            }
-          },
-          {
-            "name": "slotsPerProposal",
-            "type": {
-              "option": "u64"
-            }
-          },
-          {
-            "name": "twapInitialObservation",
-            "type": {
-              "option": "u128"
-            }
-          },
-          {
-            "name": "twapMaxObservationChangePerUpdate",
-            "type": {
-              "option": "u128"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "ProposalAccount",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "pubkey",
-            "type": "publicKey"
-          },
-          {
-            "name": "isSigner",
-            "type": "bool"
-          },
-          {
-            "name": "isWritable",
-            "type": "bool"
-          }
-        ]
-      }
-    },
-    {
-      "name": "ProposalInstruction",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "programId",
-            "type": "publicKey"
-          },
-          {
-            "name": "accounts",
-            "type": {
-              "vec": {
-                "defined": "ProposalAccount"
-              }
-            }
-          },
-          {
-            "name": "data",
-            "type": "bytes"
-          }
-        ]
-      }
-    },
-    {
-      "name": "ProposalState",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Pending"
-          },
-          {
-            "name": "Passed"
-          },
-          {
-            "name": "Failed"
-          },
-          {
-            "name": "Executed"
-          }
-        ]
-      }
+      "discriminator": [
+        26,
+        94,
+        189,
+        187,
+        116,
+        136,
+        53,
+        33
+      ]
     }
   ],
   "errors": [
@@ -593,7 +391,517 @@
       "msg": "The LP tokens passed in have less liquidity than the DAO's `min_quote_futarchic_liquidity` or `min_base_futachic_liquidity`"
     }
   ],
-  "metadata": {
-    "address": "FuTPR6ScKMPHtZFwacq9qrtf9VjscawNEFTb2wSYr1gY"
-  }
+  "types": [
+    {
+      "name": "Amm",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "proposal",
+            "docs": [
+              "We need to create multiple AMMs for a single asset pair, but AMMs are PDAs.",
+              "So we can use proposal as a PDA seed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_mint_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "quote_mint_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "base_amount",
+            "type": "u64"
+          },
+          {
+            "name": "quote_amount",
+            "type": "u64"
+          },
+          {
+            "name": "oracle",
+            "type": {
+              "defined": {
+                "name": "TwapOracle"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConditionalVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "VaultStatus"
+              }
+            }
+          },
+          {
+            "name": "settlement_authority",
+            "docs": [
+              "The account that can either finalize the vault to make conditional tokens",
+              "redeemable for underlying tokens or revert the vault to make deposit",
+              "slips redeemable for underlying tokens."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "underlying_token_mint",
+            "docs": [
+              "The mint of the tokens that are deposited into the vault."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "proposal",
+            "docs": [
+              "We need to be able to create multiple vault for a single underlying token",
+              "account, so we use proposal as a PDA seed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "underlying_token_account",
+            "docs": [
+              "The vault's storage account for deposited funds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "conditional_on_finalize_token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "conditional_on_revert_token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "pda_bump",
+            "type": "u8"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DAO",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "treasury_pda_bump",
+            "type": "u8"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "proposal_count",
+            "type": "u32"
+          },
+          {
+            "name": "pass_threshold_bps",
+            "type": "u16"
+          },
+          {
+            "name": "slots_per_proposal",
+            "type": "u64"
+          },
+          {
+            "name": "twap_initial_observation",
+            "docs": [
+              "For manipulation-resistance the TWAP is a time-weighted average observation,",
+              "where observation tries to approximate price but can only move by",
+              "`twap_max_observation_change_per_update` per update. Because it can only move",
+              "a little bit per update, you need to check that it has a good initial observation.",
+              "Otherwise, an attacker could create a very high initial observation in the pass",
+              "market and a very low one in the fail market to force the proposal to pass.",
+              "",
+              "We recommend setting an initial observation around the spot price of the token,",
+              "and max observation change per update around 2% the spot price of the token.",
+              "For example, if the spot price of META is $400, we'd recommend setting an initial",
+              "observation of 400 (converted into the AMM prices) and a max observation change per",
+              "update of 8 (also converted into the AMM prices). Observations can be updated once",
+              "a minute, so 2% allows the proposal market to reach double the spot price or 0",
+              "in 50 minutes."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "twap_max_observation_change_per_update",
+            "type": "u128"
+          },
+          {
+            "name": "min_quote_futarchic_liquidity",
+            "docs": [
+              "As an anti-spam measure and to help liquidity, you need to lock up some liquidity",
+              "in both futarchic markets in order to create a proposal.",
+              "",
+              "For example, for META, we can use a `min_quote_futarchic_liquidity` of",
+              "5000 * 1_000_000 (5000 USDC) and a `min_base_futarchic_liquidity` of",
+              "10 * 1_000_000_000 (10 META)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "min_base_futarchic_liquidity",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeDaoParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "twap_initial_observation",
+            "type": "u128"
+          },
+          {
+            "name": "twap_max_observation_change_per_update",
+            "type": "u128"
+          },
+          {
+            "name": "min_quote_futarchic_liquidity",
+            "type": "u64"
+          },
+          {
+            "name": "min_base_futarchic_liquidity",
+            "type": "u64"
+          },
+          {
+            "name": "pass_threshold_bps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "slots_per_proposal",
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeProposalParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "description_url",
+            "type": "string"
+          },
+          {
+            "name": "instruction",
+            "type": {
+              "defined": {
+                "name": "ProposalInstruction"
+              }
+            }
+          },
+          {
+            "name": "pass_lp_tokens_to_lock",
+            "type": "u64"
+          },
+          {
+            "name": "fail_lp_tokens_to_lock",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Proposal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "number",
+            "type": "u32"
+          },
+          {
+            "name": "proposer",
+            "type": "pubkey"
+          },
+          {
+            "name": "description_url",
+            "type": "string"
+          },
+          {
+            "name": "slot_enqueued",
+            "type": "u64"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "ProposalState"
+              }
+            }
+          },
+          {
+            "name": "instruction",
+            "type": {
+              "defined": {
+                "name": "ProposalInstruction"
+              }
+            }
+          },
+          {
+            "name": "pass_amm",
+            "type": "pubkey"
+          },
+          {
+            "name": "fail_amm",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "dao",
+            "type": "pubkey"
+          },
+          {
+            "name": "pass_lp_tokens_locked",
+            "type": "u64"
+          },
+          {
+            "name": "fail_lp_tokens_locked",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProposalAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_signer",
+            "type": "bool"
+          },
+          {
+            "name": "is_writable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProposalInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "accounts",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ProposalAccount"
+                }
+              }
+            }
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProposalState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Passed"
+          },
+          {
+            "name": "Failed"
+          },
+          {
+            "name": "Executed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TwapOracle",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "last_updated_slot",
+            "type": "u64"
+          },
+          {
+            "name": "last_price",
+            "docs": [
+              "A price is the number of quote units per base unit multiplied by 1e12.",
+              "You cannot simply divide by 1e12 to get a price you can display in the UI",
+              "because the base and quote decimals may be different. Instead, do:",
+              "ui_price = (price * (10**(base_decimals - quote_decimals))) / 1e12"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "last_observation",
+            "docs": [
+              "If we did a raw TWAP over prices, someone could push the TWAP heavily with",
+              "a few extremely large outliers. So we use observations, which can only move",
+              "by `max_observation_change_per_update` per update."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "aggregator",
+            "docs": [
+              "Running sum of slots_per_last_update * last_observation.",
+              "",
+              "Assuming latest observations are as big as possible (u64::MAX * 1e12),",
+              "we can store 18 million slots worth of observations, which turns out to",
+              "be ~85 days worth of slots.",
+              "",
+              "Assuming that latest observations are 100x smaller than they could theoretically",
+              "be, we can store 8500 days (23 years) worth of them. Even this is a very",
+              "very conservative assumption - META/USDC prices should be between 1e9 and",
+              "1e15, which would overflow after 1e15 years worth of slots.",
+              "",
+              "So in the case of an overflow, the aggregator rolls back to 0. It's the",
+              "client's responsibility to sanity check the assets or to handle an",
+              "aggregator at t2 being smaller than an aggregator at t1."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "max_observation_change_per_update",
+            "docs": [
+              "The most that an observation can change per update."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "initial_observation",
+            "docs": [
+              "What the initial `latest_observation` is set to."
+            ],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateDaoParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pass_threshold_bps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "slots_per_proposal",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "twap_initial_observation",
+            "type": {
+              "option": "u128"
+            }
+          },
+          {
+            "name": "twap_max_observation_change_per_update",
+            "type": {
+              "option": "u128"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Finalized"
+          },
+          {
+            "name": "Reverted"
+          }
+        ]
+      }
+    }
+  ]
 }

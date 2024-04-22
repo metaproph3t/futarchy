@@ -25,7 +25,7 @@ export class AmmClient {
     luts: AddressLookupTableAccount[]
   ) {
     this.provider = provider;
-    this.program = new Program<AmmIDLType>(AmmIDL, ammProgramId, provider);
+    this.program = new Program<AmmIDLType>(AmmIDL, provider);
     this.luts = luts;
   }
 

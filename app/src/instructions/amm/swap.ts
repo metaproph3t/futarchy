@@ -21,7 +21,7 @@ export const swapHandler = (
       inputAmount,
       outputAmountMin
     })
-    .accounts({
+    .accountsPartial({
       user: client.provider.publicKey,
       amm: ammAddr,
       baseMint,

@@ -65,7 +65,6 @@ export class AutocratClient {
     this.provider = provider;
     this.autocrat = new Program<Autocrat>(
       AutocratIDL,
-      autocratProgramId,
       provider
     );
     this.vaultClient = ConditionalVaultClient.createClient({
@@ -586,7 +585,7 @@ export class AutocratClient {
     const [daoTreasury] = getDaoTreasuryAddr(this.autocrat.programId, dao);
     return this.autocrat.methods
       .executeProposal()
-      .accounts({
+      .accountsPartial({
         proposal,
         dao,
         // daoTreasury,

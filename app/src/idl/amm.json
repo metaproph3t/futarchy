@@ -1,531 +1,404 @@
 {
-  "version": "1.0.0",
-  "name": "amm",
+  "address": "Ens7Gx99whnA8zZm6ZiFnWgGq3x76nXbSmh5gaaJqpAz",
+  "metadata": {
+    "name": "amm",
+    "version": "1.0.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
   "instructions": [
     {
-      "name": "createAmm",
+      "name": "add_liquidity",
+      "discriminator": [
+        181,
+        157,
+        89,
+        67,
+        143,
+        182,
+        52,
+        72
+      ],
       "accounts": [
         {
           "name": "user",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "amm",
-          "isMut": true,
-          "isSigner": false
+          "writable": true
         },
         {
-          "name": "lpMint",
-          "isMut": true,
-          "isSigner": false
+          "name": "lp_mint",
+          "writable": true,
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "baseMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "base_mint",
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "quoteMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "quote_mint",
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "vaultAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_lp",
+          "writable": true
         },
         {
-          "name": "vaultAtaQuote",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_base",
+          "writable": true
         },
         {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "user_ata_quote",
+          "writable": true
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "vault_ata_base",
+          "writable": true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "vault_ata_quote",
+          "writable": true
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
           "name": "args",
           "type": {
-            "defined": "CreateAmmArgs"
+            "defined": {
+              "name": "AddLiquidityArgs"
+            }
           }
         }
       ]
     },
     {
-      "name": "addLiquidity",
+      "name": "crank_that_twap",
+      "discriminator": [
+        220,
+        100,
+        25,
+        249,
+        0,
+        92,
+        195,
+        193
+      ],
+      "accounts": [
+        {
+          "name": "amm",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_amm",
+      "discriminator": [
+        242,
+        91,
+        21,
+        170,
+        5,
+        68,
+        125,
+        64
+      ],
       "accounts": [
         {
           "name": "user",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "amm",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  109,
+                  109,
+                  95,
+                  95
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base_mint"
+              },
+              {
+                "kind": "account",
+                "path": "quote_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "args.proposal"
+              }
+            ]
+          }
         },
         {
-          "name": "lpMint",
-          "isMut": true,
-          "isSigner": false
+          "name": "lp_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  109,
+                  109,
+                  95,
+                  108,
+                  112,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "amm"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "base_mint"
         },
         {
-          "name": "quoteMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "quote_mint"
         },
         {
-          "name": "userAtaLp",
-          "isMut": true,
-          "isSigner": false
+          "name": "vault_ata_base",
+          "writable": true
         },
         {
-          "name": "userAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "vault_ata_quote",
+          "writable": true
         },
         {
-          "name": "userAtaQuote",
-          "isMut": true,
-          "isSigner": false
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "vaultAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "vaultAtaQuote",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
           "name": "args",
           "type": {
-            "defined": "AddLiquidityArgs"
+            "defined": {
+              "name": "CreateAmmArgs"
+            }
           }
         }
       ]
     },
     {
-      "name": "removeLiquidity",
+      "name": "remove_liquidity",
+      "discriminator": [
+        80,
+        85,
+        209,
+        72,
+        24,
+        206,
+        177,
+        108
+      ],
       "accounts": [
         {
           "name": "user",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "amm",
-          "isMut": true,
-          "isSigner": false
+          "writable": true
         },
         {
-          "name": "lpMint",
-          "isMut": true,
-          "isSigner": false
+          "name": "lp_mint",
+          "writable": true,
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "baseMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "base_mint",
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "quoteMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "quote_mint",
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "userAtaLp",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_lp",
+          "writable": true
         },
         {
-          "name": "userAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_base",
+          "writable": true
         },
         {
-          "name": "userAtaQuote",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_quote",
+          "writable": true
         },
         {
-          "name": "vaultAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "vault_ata_base",
+          "writable": true
         },
         {
-          "name": "vaultAtaQuote",
-          "isMut": true,
-          "isSigner": false
+          "name": "vault_ata_quote",
+          "writable": true
         },
         {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
           "name": "args",
           "type": {
-            "defined": "RemoveLiquidityArgs"
+            "defined": {
+              "name": "RemoveLiquidityArgs"
+            }
           }
         }
       ]
     },
     {
       "name": "swap",
+      "discriminator": [
+        248,
+        198,
+        158,
+        145,
+        225,
+        117,
+        135,
+        200
+      ],
       "accounts": [
         {
           "name": "user",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "amm",
-          "isMut": true,
-          "isSigner": false
+          "writable": true
         },
         {
-          "name": "baseMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "base_mint",
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "quoteMint",
-          "isMut": false,
-          "isSigner": false
+          "name": "quote_mint",
+          "relations": [
+            "amm"
+          ]
         },
         {
-          "name": "userAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_base",
+          "writable": true
         },
         {
-          "name": "userAtaQuote",
-          "isMut": true,
-          "isSigner": false
+          "name": "user_ata_quote",
+          "writable": true
         },
         {
-          "name": "vaultAtaBase",
-          "isMut": true,
-          "isSigner": false
+          "name": "vault_ata_base",
+          "writable": true
         },
         {
-          "name": "vaultAtaQuote",
-          "isMut": true,
-          "isSigner": false
+          "name": "vault_ata_quote",
+          "writable": true
         },
         {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
           "name": "args",
           "type": {
-            "defined": "SwapArgs"
+            "defined": {
+              "name": "SwapArgs"
+            }
           }
         }
       ]
-    },
-    {
-      "name": "crankThatTwap",
-      "accounts": [
-        {
-          "name": "amm",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": []
     }
   ],
   "accounts": [
     {
       "name": "Amm",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "proposal",
-            "docs": [
-              "We need to create multiple AMMs for a single asset pair, but AMMs are PDAs.",
-              "So we can use proposal as a PDA seed."
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "createdAtSlot",
-            "type": "u64"
-          },
-          {
-            "name": "lpMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "baseMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "quoteMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "baseMintDecimals",
-            "type": "u8"
-          },
-          {
-            "name": "quoteMintDecimals",
-            "type": "u8"
-          },
-          {
-            "name": "baseAmount",
-            "type": "u64"
-          },
-          {
-            "name": "quoteAmount",
-            "type": "u64"
-          },
-          {
-            "name": "oracle",
-            "type": {
-              "defined": "TwapOracle"
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "types": [
-    {
-      "name": "AddLiquidityArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "maxBaseAmount",
-            "type": "u64"
-          },
-          {
-            "name": "maxQuoteAmount",
-            "type": "u64"
-          },
-          {
-            "name": "minBaseAmount",
-            "type": "u64"
-          },
-          {
-            "name": "minQuoteAmount",
-            "type": "u64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "CreateAmmArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "twapInitialObservation",
-            "type": "u128"
-          },
-          {
-            "name": "twapMaxObservationChangePerUpdate",
-            "type": "u128"
-          },
-          {
-            "name": "proposal",
-            "type": "publicKey"
-          }
-        ]
-      }
-    },
-    {
-      "name": "RemoveLiquidityArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "lpTokensToBurn",
-            "type": "u64"
-          },
-          {
-            "name": "minQuoteAmount",
-            "type": "u64"
-          },
-          {
-            "name": "minBaseAmount",
-            "type": "u64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "SwapArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "swapType",
-            "type": {
-              "defined": "SwapType"
-            }
-          },
-          {
-            "name": "inputAmount",
-            "type": "u64"
-          },
-          {
-            "name": "outputAmountMin",
-            "type": "u64"
-          }
-        ]
-      }
-    },
-    {
-      "name": "TwapOracle",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "lastUpdatedSlot",
-            "type": "u64"
-          },
-          {
-            "name": "lastPrice",
-            "docs": [
-              "A price is the number of quote units per base unit multiplied by 1e12.",
-              "You cannot simply divide by 1e12 to get a price you can display in the UI",
-              "because the base and quote decimals may be different. Instead, do:",
-              "ui_price = (price * (10**(base_decimals - quote_decimals))) / 1e12"
-            ],
-            "type": "u128"
-          },
-          {
-            "name": "lastObservation",
-            "docs": [
-              "If we did a raw TWAP over prices, someone could push the TWAP heavily with",
-              "a few extremely large outliers. So we use observations, which can only move",
-              "by `max_observation_change_per_update` per update."
-            ],
-            "type": "u128"
-          },
-          {
-            "name": "aggregator",
-            "docs": [
-              "Running sum of slots_per_last_update * last_observation.",
-              "",
-              "Assuming latest observations are as big as possible (u64::MAX * 1e12),",
-              "we can store 18 million slots worth of observations, which turns out to",
-              "be ~85 days worth of slots.",
-              "",
-              "Assuming that latest observations are 100x smaller than they could theoretically",
-              "be, we can store 8500 days (23 years) worth of them. Even this is a very",
-              "very conservative assumption - META/USDC prices should be between 1e9 and",
-              "1e15, which would overflow after 1e15 years worth of slots.",
-              "",
-              "So in the case of an overflow, the aggregator rolls back to 0. It's the",
-              "client's responsibility to sanity check the assets or to handle an",
-              "aggregator at t2 being smaller than an aggregator at t1."
-            ],
-            "type": "u128"
-          },
-          {
-            "name": "maxObservationChangePerUpdate",
-            "docs": [
-              "The most that an observation can change per update."
-            ],
-            "type": "u128"
-          },
-          {
-            "name": "initialObservation",
-            "docs": [
-              "What the initial `latest_observation` is set to."
-            ],
-            "type": "u128"
-          }
-        ]
-      }
-    },
-    {
-      "name": "SwapType",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Buy"
-          },
-          {
-            "name": "Sell"
-          }
-        ]
-      }
+      "discriminator": [
+        143,
+        245,
+        200,
+        17,
+        74,
+        214,
+        196,
+        135
+      ]
     }
   ],
   "errors": [
@@ -575,7 +448,233 @@
       "msg": "Cannot add liquidity with 0 tokens on either side"
     }
   ],
-  "metadata": {
-    "address": "Ens7Gx99whnA8zZm6ZiFnWgGq3x76nXbSmh5gaaJqpAz"
-  }
+  "types": [
+    {
+      "name": "AddLiquidityArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "max_base_amount",
+            "type": "u64"
+          },
+          {
+            "name": "max_quote_amount",
+            "type": "u64"
+          },
+          {
+            "name": "min_base_amount",
+            "type": "u64"
+          },
+          {
+            "name": "min_quote_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Amm",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "proposal",
+            "docs": [
+              "We need to create multiple AMMs for a single asset pair, but AMMs are PDAs.",
+              "So we can use proposal as a PDA seed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "quote_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "base_mint_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "quote_mint_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "base_amount",
+            "type": "u64"
+          },
+          {
+            "name": "quote_amount",
+            "type": "u64"
+          },
+          {
+            "name": "oracle",
+            "type": {
+              "defined": {
+                "name": "TwapOracle"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateAmmArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "twap_initial_observation",
+            "type": "u128"
+          },
+          {
+            "name": "twap_max_observation_change_per_update",
+            "type": "u128"
+          },
+          {
+            "name": "proposal",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RemoveLiquidityArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lp_tokens_to_burn",
+            "type": "u64"
+          },
+          {
+            "name": "min_quote_amount",
+            "type": "u64"
+          },
+          {
+            "name": "min_base_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "swap_type",
+            "type": {
+              "defined": {
+                "name": "SwapType"
+              }
+            }
+          },
+          {
+            "name": "input_amount",
+            "type": "u64"
+          },
+          {
+            "name": "output_amount_min",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Buy"
+          },
+          {
+            "name": "Sell"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TwapOracle",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "last_updated_slot",
+            "type": "u64"
+          },
+          {
+            "name": "last_price",
+            "docs": [
+              "A price is the number of quote units per base unit multiplied by 1e12.",
+              "You cannot simply divide by 1e12 to get a price you can display in the UI",
+              "because the base and quote decimals may be different. Instead, do:",
+              "ui_price = (price * (10**(base_decimals - quote_decimals))) / 1e12"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "last_observation",
+            "docs": [
+              "If we did a raw TWAP over prices, someone could push the TWAP heavily with",
+              "a few extremely large outliers. So we use observations, which can only move",
+              "by `max_observation_change_per_update` per update."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "aggregator",
+            "docs": [
+              "Running sum of slots_per_last_update * last_observation.",
+              "",
+              "Assuming latest observations are as big as possible (u64::MAX * 1e12),",
+              "we can store 18 million slots worth of observations, which turns out to",
+              "be ~85 days worth of slots.",
+              "",
+              "Assuming that latest observations are 100x smaller than they could theoretically",
+              "be, we can store 8500 days (23 years) worth of them. Even this is a very",
+              "very conservative assumption - META/USDC prices should be between 1e9 and",
+              "1e15, which would overflow after 1e15 years worth of slots.",
+              "",
+              "So in the case of an overflow, the aggregator rolls back to 0. It's the",
+              "client's responsibility to sanity check the assets or to handle an",
+              "aggregator at t2 being smaller than an aggregator at t1."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "max_observation_change_per_update",
+            "docs": [
+              "The most that an observation can change per update."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "initial_observation",
+            "docs": [
+              "What the initial `latest_observation` is set to."
+            ],
+            "type": "u128"
+          }
+        ]
+      }
+    }
+  ]
 }

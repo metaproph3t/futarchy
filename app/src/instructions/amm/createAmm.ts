@@ -33,8 +33,8 @@ export const createAmmHandler = (
     })
     .accounts({
       user: client.provider.publicKey,
-      amm: ammAddr,
-      lpMint,
+      // amm: ammAddr,
+      // lpMint,
       baseMint,
       quoteMint,
       vaultAtaBase,
