@@ -1,22 +1,15 @@
-import { initializeProposal, daoTreasury, META } from "./main";
 import * as anchor from "@coral-xyz/anchor";
 import { MEMO_PROGRAM_ID } from "@solana/spl-memo";
 import * as token from "@solana/spl-token";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-
-const { PublicKey, Keypair, SystemProgram } = anchor.web3;
-const { BN, Program } = anchor;
+import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { AutocratClient } from "../app/src/AutocratClient";
+import { DEAN_DEVNET_DAO } from "./consts";
 
 const provider = anchor.AnchorProvider.env();
-anchor.setProvider(provider);
 
 const payer = provider.wallet["payer"];
 
-const PANTERA_PUBKEY = new PublicKey(
-  "BtNPTBX1XkFCwazDJ6ZkK3hcUsomm1RPcfmtUrP6wd2K"
-);
-
-const COST_DEPLOY = 4 * LAMPORTS_PER_SOL;
+let autocratClient = AutocratClient.createClient({ provider });
 
 // Transfer
 const buildTreasuryTransferInstruction = async (
@@ -159,24 +152,6 @@ async function main() {
   console.log("PublicKey SOL balance");
   console.log(payerBalance / LAMPORTS_PER_SOL);
 
-  // Check to ensure the payer has enough SOL to actually execute the proposal creation
-  if (payerBalance < COST_DEPLOY) {
-    const diff = COST_DEPLOY - payerBalance;
-    console.error(
-      `PublicKey doesn't have enough balance ${
-        payerBalance / LAMPORTS_PER_SOL
-      } to initialize proposal ${COST_DEPLOY / LAMPORTS_PER_SOL}`
-    );
-    console.error(`Add ${diff / LAMPORTS_PER_SOL} more SOL`);
-    return;
-  }
-
-  console.log("Account has enough SOL (4) to continue");
-
-  // const proposalIx = await buildTreasuryBurnInstruction(daoTreasury, META, 1337);
-
-  // const proposalIx = await buildTreasuryTransferInstruction(daoTreasury, PANTERA_PUBKEY, META, 342)
-
   const proposalIx = await buildMemoInstruction("TESTING DEVNET");
 
   const ix = {
@@ -189,10 +164,11 @@ async function main() {
   console.log(ix);
 
   // Sleep for review
-  console.log("Sleeping for 60s, press ctrl + c to cancel");
-  await new Promise((f) => setTimeout(f, 60000));
+  // console.log("Sleeping for 60s, press ctrl + c to cancel");
+  // await new Promise((f) => setTimeout(f, 60000));
 
-  await initializeProposal(ix, "https://google.com");
+  let prop = await autocratClient.initializeProposal(DEAN_DEVNET_DAO, "https://google.com", ix, 100_000, 100);
+  console.log('prop:', prop);
 }
 
 main();

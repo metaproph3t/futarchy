@@ -5,6 +5,7 @@ import {
   Connection,
   Keypair,
   PublicKey,
+  Signer,
 } from "@solana/web3.js";
 import { PriceMath } from "./utils/priceMath";
 
@@ -248,8 +249,8 @@ export class AutocratClient {
     dao: PublicKey,
     descriptionUrl: string,
     instruction: ProposalInstruction,
-    baseTokensToLP: BN,
-    quoteTokensToLP: BN
+    baseTokensToLP: number,
+    quoteTokensToLP: number
   ): Promise<PublicKey> {
     let vaultProgramId = this.vaultClient.vaultProgram.programId;
     const proposalKP = Keypair.generate();
@@ -257,6 +258,13 @@ export class AutocratClient {
 
     const storedDao = await this.getDao(dao);
     const daoTreasury = storedDao.treasury;
+    let tokenDecimals = unpackMint(
+      storedDao.tokenMint,
+      await this.provider.connection.getAccountInfo(storedDao.tokenMint)
+    ).decimals;
+
+    const scaledBaseTokensToLP = new BN(baseTokensToLP).mul(new BN(10).pow(new BN(tokenDecimals)));
+    const scaledQuoteTokensToLP = new BN(quoteTokensToLP).mul(new BN(10).pow(new BN(USDC_DECIMALS)))
 
     await this.vaultClient
       .initializeVaultIx(storedDao.treasury, storedDao.tokenMint, proposal)
@@ -281,10 +289,10 @@ export class AutocratClient {
     // await this.vaultClient.mintConditionalTokens(baseVault, 10);
     // await this.vaultClient.mintConditionalTokens(quoteVault, 10_000);
     await this.vaultClient
-      .mintConditionalTokensIx(baseVault, storedDao.tokenMint, baseTokensToLP)
+      .mintConditionalTokensIx(baseVault, storedDao.tokenMint, scaledBaseTokensToLP)
       .rpc();
     await this.vaultClient
-      .mintConditionalTokensIx(quoteVault, storedDao.usdcMint, quoteTokensToLP)
+      .mintConditionalTokensIx(quoteVault, storedDao.usdcMint, scaledQuoteTokensToLP)
       .rpc();
 
     const [passBase] = getVaultFinalizeMintAddr(vaultProgramId, baseVault);
@@ -319,8 +327,8 @@ export class AutocratClient {
             passAmm,
             passBase,
             passQuote,
-            quoteTokensToLP,
-            baseTokensToLP,
+            scaledQuoteTokensToLP,
+            scaledBaseTokensToLP,
             new BN(0)
           )
           .instruction(),
@@ -338,59 +346,18 @@ export class AutocratClient {
             failAmm,
             failBase,
             failQuote,
-            quoteTokensToLP,
-            baseTokensToLP,
+            scaledQuoteTokensToLP,
+            scaledBaseTokensToLP,
             new BN(0)
           )
           .instruction(),
       ])
       .rpc();
-
-    //   tx.feePayer = this.provider.publicKey;
-    // let blockhash = await this.provider.connection.banksClient.getLatestBlockhash();
-    // [tx.recentBlockhash] = blockhash;
-    // console.log(tx);
-    // let msg = tx.compileMessage();
-    // console.log(msg.serialize().length);
-
-    // return;
-    // .rpc();
-
-    // .rpc();
-
-    // .rpc();
+      // .rpc();
+    console.log(tx);
 
     // this is how many original tokens are created
-    const lpTokens = quoteTokensToLP;
-
-    // let tx = await this.initializeProposalIx(
-    //   proposalKP,
-    //   descriptionUrl,
-    //   instruction,
-    //   dao,
-    //   storedDao.tokenMint,
-    //   storedDao.usdcMint,
-    //   lpTokens,
-    //   lpTokens
-    // )
-    //   .preInstructions([
-    //     await this.autocrat.account.proposal.createInstruction(
-    //       proposalKP,
-    //       2500
-    //     ),
-    //   ])
-    //   .transaction();
-
-    // tx.feePayer = this.provider.publicKey;
-    // console.log(await this.provider.connection.banksClient.getLatestBlockhash());
-    // let blockhash = await this.provider.connection.banksClient.getLatestBlockhash();
-    // [tx.recentBlockhash] = blockhash;
-    // let msg = tx.compileMessage();
-    // console.log(msg.serialize().length);
-    // console.log(msg.recentBlockhash = );
-    // Connection
-
-    // console.log(tx.feePayer = payer.publicKey);
+    const lpTokens = scaledQuoteTokensToLP;
 
     await this.initializeProposalIx(
       proposalKP,
@@ -405,7 +372,7 @@ export class AutocratClient {
       .preInstructions([
         await this.autocrat.account.proposal.createInstruction(
           proposalKP,
-          2500
+          1500
         ),
       ])
       .rpc();

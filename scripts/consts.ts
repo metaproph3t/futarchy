@@ -32,3 +32,13 @@ export const DEVNET_USDC = new PublicKey(
 export const USDC = new PublicKey(
   "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 );
+
+export const DEAN_DEVNET_DAO = new PublicKey(
+  "8YjkfNfL2jmRd9zKvRtRjU3G7rhYqks5sBSDRnWcmbNg"
+);
+export const METADAO_DEVNET_DAO = new PublicKey(
+  "Amp4ZsEP2Pmhu2ySbnuPHvEbr8zhuom7bGWbfXFYnurE"
+);
+export const FUTURE_DEVNET_DAO = new PublicKey(
+  "B9zidTQnJR37sJdX5S1zk2aUsWN7s7FC967sXKipCxUM"
+);
