@@ -29,7 +29,7 @@ let vaultClient: ConditionalVaultClient = ConditionalVaultClient.createClient({
 
 const payer = provider.wallet["payer"];
 
-const PROPOSAL = new PublicKey("MW1dKeDYgewceWuaSmDytdpwNzZDwABf1FuwJix923C");
+const PROPOSAL = new PublicKey("7aBCxKChki3ePDX1K77wFo7amX6JyFCdUUgx82wLmzjq");
 
 async function main() {
   const DAO = new PublicKey("ofvb3CPvEyRfD5az8PAqW6ATpPqVBeiB5zBnpPR5cgm");
@@ -55,14 +55,90 @@ async function main() {
     DAO
   );
 
-  const basePassBalance = (await token.getOrCreateAssociatedTokenAccount(provider.connection, payer, passBaseMint, payer.publicKey)).amount;
-  const quotePassBalance = (await token.getOrCreateAssociatedTokenAccount(provider.connection, payer, passQuoteMint, payer.publicKey)).amount;
+  const passLpBalance = (
+    await token.getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      payer,
+      passLp,
+      payer.publicKey
+    )
+  ).amount;
+  const failLpBalance = (
+    await token.getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      payer,
+      failLp,
+      payer.publicKey
+    )
+  ).amount;
 
-  await vaultClient.mergeConditionalTokensIx(baseVault, storedDao.tokenMint, new BN(basePassBalance.toString()))
-    .preInstructions([
-        ComputeBudgetProgram.setComputeUnitLimit({ units: 150_000 }),
+  if (passLpBalance > 0) {
+    await ammClient
+      .removeLiquidityIx(
+        passAmm,
+        passBaseMint,
+        passQuoteMint,
+        new BN(passLpBalance.toString()),
+        new BN(0),
+        new BN(0)
+      )
+      .preInstructions([
+        ComputeBudgetProgram.setComputeUnitLimit({ units: 50_000 }),
         ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100 }),
-        await vaultClient.mergeConditionalTokensIx(quoteVault, storedDao.usdcMint, new BN(quotePassBalance.toString())).instruction(),
+      ])
+      .rpc();
+  }
+
+  if (failLpBalance > 0) {
+    await ammClient
+      .removeLiquidityIx(
+        failAmm,
+        failBaseMint,
+        failQuoteMint,
+        new BN(failLpBalance.toString()),
+        new BN(0),
+        new BN(0)
+      )
+      .preInstructions([
+        ComputeBudgetProgram.setComputeUnitLimit({ units: 50_000 }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100 }),
+      ])
+      .rpc();
+  }
+
+  const basePassBalance = (
+    await token.getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      payer,
+      passBaseMint,
+      payer.publicKey
+    )
+  ).amount;
+  const quotePassBalance = (
+    await token.getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      payer,
+      passQuoteMint,
+      payer.publicKey
+    )
+  ).amount;
+
+  await vaultClient
+    .mergeConditionalTokensIx(
+      baseVault,
+      storedDao.tokenMint,
+      new BN(basePassBalance.toString())
+    )
+    .preInstructions([
+      ComputeBudgetProgram.setComputeUnitLimit({ units: 150_000 }),
+      ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100 }),
+      await vaultClient
+        .mergeConditionalTokensIx(
+          quoteVault,
+          storedDao.usdcMint,
+          new BN(quotePassBalance.toString())
+        )
+        .instruction(),
     ])
     .rpc();
 }
